@@ -12,7 +12,7 @@ let generateUserInfo = function(){
       id:   id,
       name: chance.name(),
       age:  chance.age(),
-      gender: chance.gender()
+      gender: chance.gender().toLowerCase()
     }
   }
   console.log(users);
