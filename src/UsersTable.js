@@ -95,7 +95,7 @@ class AddUser extends User {
             />
         </div>
         <div className="small-2 column">
-          <button className="button" onClick={e=>{this.addUser() && this.clearUserState();}}>+</button>
+          <button className="button expanded" onClick={e=>{this.addUser() && this.clearUserState();}}><i className="step fi-plus size-72"></i></button>
         </div>
       </div>
     );
@@ -151,8 +151,13 @@ class UserRow extends User {
               />
           </td>
           <td>
-            <button onClick={e=>this.onEditDone()}>Done</button>
-            <button onClick={e=>this.deleteUser()}>Delete</button>
+            <button style={{width:"50%",border_right: "1px solid #000000"}}
+              onClick={e=>this.onEditDone()}>
+              <i className="fa fa-pencil" aria-hidden="true"></i>
+            </button>
+            <button style={{width:"50%"}} onClick={e=>this.deleteUser()}>
+              <i className="fa fa-times" aria-hidden="true"></i>
+            </button>
           </td>
         </tr>
       );
@@ -162,9 +167,18 @@ class UserRow extends User {
           <td>{user.name}</td>
           <td>{user.age}</td>
           <td>{user.gender}</td>
-          <td>
-            <button onClick={e=>this.onEdit()}>Edit</button>
-            <button onClick={e=>this.deleteUser()}>Delete</button>
+          <td className="action">
+            <div>
+              <button
+                onClick={e=>this.onEdit()}>
+                <i className="fa fa-pencil" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div>
+              <button  onClick={e=>this.deleteUser()}>
+                <i className="fa fa-times" aria-hidden="true"></i>
+              </button>
+            </div>
           </td>
         </tr>
       );
@@ -230,35 +244,52 @@ class UsersTable extends React.Component {
       }
     );
     const pagenation = _.range(1,npage).map( page => {
-      return <button
-        key={'page'+page}
-        onClick={e=>this.changePage(page)}
-        className={this.state.page === page ? 'current-page' : ''}
-        >{page}
-      </button>;
-    });
-    return (
-      <div>
-        <AddUser addUser={this.props.addUser}/>
-        <table>
-          <thead>
-            <tr>
-              <th onClick={()=>this.handleSort('name')}>Name</th>
-              <th onClick={()=>this.handleSort('age')}>Age</th>
-              <th onClick={()=>this.handleSort('gender')}>Gender</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userItems}
-          </tbody>
-        </table>
+      let inner=<a href="#" aria-label={'Page '+page}>{page}</a>;
+        let classname = '';
+        if(this.state.page+1 === page ){
+          inner = (<span><span className="show-for-sr">You are on page</span>{page}</span>);
+          classname="current";
+        }
+        return (
+          <li
+            key={'page'+page}
+            onClick={e=>this.changePage(page)}
+            className={classname}
+            >
+            {inner}
+          </li>
+        );
+      });
+      return (
         <div>
-          {pagenation}
-        </div>
-      </div>
-    );
-  }
+          <AddUser addUser={this.props.addUser}/>
+          <table>
+            <thead>
+              <tr>
+                <th width="35%" onClick={()=>this.handleSort('name')}>
+                  Name <i className="fa fa-sort-amount-desc" aria-hidden="true"></i>
+              </th>
+              <th width="25%" onClick={()=>this.handleSort('age')}>
+                Age <i className="fa fa-sort-amount-desc" aria-hidden="true"></i>
+            </th>
+            <th width="25%" onClick={()=>this.handleSort('gender')}>
+              Gender <i className="fa fa-sort-amount-desc" aria-hidden="true"></i>
+          </th>
+          <th width="15%"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {userItems}
+      </tbody>
+    </table>
+    <div>
+      <ul className="pagination text-center" role="navigation" aria-label="Pagination">
+        {pagenation}
+      </ul>
+    </div>
+  </div>
+);
+}
 }
 
 export default UsersTable;

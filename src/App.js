@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { addUser, modifyUser, deleteUser }  from './actions';
 import UsersTable from './UsersTable'
 import './App.css';
-
+import logo from './logo-nord.svg';
 class App extends Component {
   // add, modify, delete user
   handleUser(action){
@@ -11,13 +11,13 @@ class App extends Component {
   }
   //
   render() {
-    const { dispatch, users } = this.props;
+    const { users } = this.props;
     return (
       <div className="App">
         <div className="top-bar">
           <div className="top-bar-left">
             <ul className="menu">
-              <li className="menu-text">Site Title</li>
+              <li className="logo"><a href="#"><img src={logo} alt="logo"></img></a></li>
             </ul>
           </div>
         </div>

@@ -1,0 +1,31 @@
+.top-bar, .top-bar ul{
+  background-color: #2C9DB1;
+  color: #ffffff;
+}
+.top-bar .logo img{
+  height:30px;
+}
+td.action div {
+  display:inline-block;
+  width:50%;
+  text-align:center;
+}
+
+td.action div:first-child {
+  border-right:1px solid #cccccc;
+}
+
+td {
+  line-height:2;
+}
+
+td input[type=text], td select {
+  height: 2rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  margin:0;
+}
+
+li.current{
+ border-radius:50%;
+}
