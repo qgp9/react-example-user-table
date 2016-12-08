@@ -1,9 +1,69 @@
 import React from 'react';
 import _ from 'underscore';
+import FormSelect from './FormSelect';
 
 // Constant for Sorting
 const ASSC = -1;
 const DESC = 1;
+
+class User extends React.Component {
+  defaultUser: {
+    id:'',
+    name:'',
+    age:0,
+    gender:'',
+  };
+  constructor(props){
+    super(props);
+    this.state = {
+      user:{...this.defaultUser}
+    }
+  }
+  getUser(){
+    return this.state.user;
+  }
+  addUser(){
+    this.props.addUser(this.state.user);
+  }
+  clearUserState(){
+    this.setState( { user:{...this.defaultUser} })
+  }
+  updateUserState(field,value){
+    if( this.state.user[field] !== value ){
+      let newUser = { ...this.state.user };
+      newUser[field] = value;
+      this.setState( { user:newUser })
+    }
+  }
+}
+
+class AddUser extends User {
+  onChange(e){
+    this.updateUserState(e.target.name, e.target.value);
+  }
+  render(){
+    return (
+      <div>
+        <input type="text" name="name" placeholder="Name"
+          onChange={this.onChange.bind(this)}
+          ></input>
+        <FormSelect name="age" placeholder="Age" options={_.range(0,100)}
+          onChange={this.onChange.bind(this)}
+          />
+        <FormSelect name="gender" placeholder="Gender" options={["male","female"]}
+          onChange={this.onChange.bind(this)}
+          />
+        <button onClick={e=>this.addUser()}>+</button>
+      </div>
+    );
+  }
+}
+
+class UserRow extends User {
+    render(){
+      
+    }
+}
 
 class UsersTable extends React.Component {
   constructor(props) {
@@ -63,7 +123,7 @@ class UsersTable extends React.Component {
             <button>Edit</button>
             <button>Delete</button>
           </td>
-          </tr>;
+        </tr>;
       }
     );
     const pagenation = _.range(1,npage).map( page => {
@@ -76,6 +136,7 @@ class UsersTable extends React.Component {
     });
     return (
       <div>
+        <AddUser addUser={this.props.addUser}/>
         <table>
           <thead>
             <tr>
