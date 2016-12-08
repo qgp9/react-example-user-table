@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import FormSelect from './FormSelect';
+var Modal = require('react-modal');
 
 // Constant for Sorting
 const ASSC = -1;
@@ -42,9 +43,7 @@ class User extends React.Component {
     }
   }
   deleteUser(){
-    if(confirm("Are you sure want to remove this entry?")){
-      this.props.deleteUser(this.props.user);
-    }
+    this.props.deleteUser(this.props.user);
   }
   modifyUser(){
     if( this.validation(this.state.user)){
@@ -95,7 +94,7 @@ class AddUser extends User {
             />
         </div>
         <div className="small-2 column">
-          <button className="button expanded" onClick={e=>{this.addUser() && this.clearUserState();}}><i className="step fi-plus size-72"></i></button>
+          <button className="button expanded" onClick={e=>{this.addUser() && this.clearUserState();}}><i className="fa fa-plus" aria-hidden="true"></i></button>
         </div>
       </div>
     );
@@ -107,7 +106,14 @@ class UserRow extends User {
     super(props);
     this.state = { ...this.state,
       editMode: false,
+      modalDeleteConfirmIsOpen: false,
     };
+  }
+  openModalDeleteConfirm() {
+    this.setState({modalDeleteConfirmIsOpen: true});
+  }
+  closeModalDeleteConfirm() {
+    this.setState({modalDeleteConfirmIsOpen: false});
   }
   onChange(e){
     this.updateUserState(e.target.name, e.target.value);
@@ -132,58 +138,88 @@ class UserRow extends User {
   }
   render(){
     let user = this.props.user;
-    if( this.state.editMode ){
-      return (
-        <tr>
-          <td>
-            <input type="text" name="name" value={this.user().name}
-              onChange={this.onChange.bind(this)}
-              ></input>
-          </td>
-          <td>
-            <FormSelect name="age" value={this.user().age} options={_.range(0,100)}
-              onChange={this.onChange.bind(this)}
-              />
-          </td>
-          <td>
-            <FormSelect name="gender" value={this.user().gender} options={["male","female"]}
-              onChange={this.onChange.bind(this)}
-              />
-          </td>
-          <td>
-            <button style={{width:"50%",border_right: "1px solid #000000"}}
-              onClick={e=>this.onEditDone()}>
+    let modalDeleteConform = '';
+    if( this.state.modalDeleteConfirmIsOpen){
+      modalDeleteConform = (<Modal
+        isOpen={this.state.modalDeleteConfirmIsOpen}
+        onRequestClose={this.closeModal}
+        contentLabel="Example Modal"
+        className="reveal confirm-modal"
+        overlayClassName="reveal-overlay"
+        style={{
+          overlay:{display:"block"},
+          content:{display:"block"}
+        }}
+        >
+
+        <h2 ref="subtitle">Remove persion</h2>
+        <div>Are you sure you want to remove this entry</div>
+        <button className="secondary button" type="button"
+          onClick={e=>this.closeModalDeleteConfirm()}
+          >CANCEL</button>
+        <i> </i>
+        <button onClick={e=>{this.deleteUser();this.closeModalDeleteConfirm()}} className="primary button" type="button">YES</button>
+        <div></div>
+      </Modal>
+    );
+  }
+  if( this.state.editMode ){
+    return (
+      <tr>
+        <td>
+          <input type="text" name="name" value={this.user().name}
+            onChange={this.onChange.bind(this)}
+            ></input>
+        </td>
+        <td>
+          <FormSelect name="age" value={this.user().age} options={_.range(0,100)}
+            onChange={this.onChange.bind(this)}
+            />
+        </td>
+        <td>
+          <FormSelect name="gender" value={this.user().gender} options={["male","female"]}
+            onChange={this.onChange.bind(this)}
+            />
+        </td>
+        <td className="action">
+          <div>
+            <button onClick={e=>this.onEditDone()}>
               <i className="fa fa-pencil" aria-hidden="true"></i>
             </button>
-            <button style={{width:"50%"}} onClick={e=>this.deleteUser()}>
+          </div>
+          <div>
+            <button  onClick={e=>this.openModalDeleteConfirm()}>
               <i className="fa fa-times" aria-hidden="true"></i>
+              {modalDeleteConform}
             </button>
-          </td>
-        </tr>
-      );
-    }else{
-      return (
-        <tr key={user.id}>
-          <td>{user.name}</td>
-          <td>{user.age}</td>
-          <td>{user.gender}</td>
-          <td className="action">
-            <div>
-              <button
-                onClick={e=>this.onEdit()}>
-                <i className="fa fa-pencil" aria-hidden="true"></i>
-              </button>
-            </div>
-            <div>
-              <button  onClick={e=>this.deleteUser()}>
-                <i className="fa fa-times" aria-hidden="true"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      );
-    }
+          </div>
+        </td>
+      </tr>
+    );
+  }else{
+    return (
+      <tr key={user.id}>
+        <td>{user.name}</td>
+        <td>{user.age}</td>
+        <td>{user.gender}</td>
+        <td className="action">
+          <div>
+            <button
+              onClick={e=>this.onEdit()}>
+              <i className="fa fa-pencil" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div>
+            <button  onClick={e=>this.openModalDeleteConfirm()}>
+              <i className="fa fa-times" aria-hidden="true"></i>
+              {modalDeleteConform}
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
   }
+}
 }
 
 class UsersTable extends React.Component {

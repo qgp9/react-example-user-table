@@ -29,3 +29,16 @@ td input[type=text], td select {
 li.current{
  border-radius:50%;
 }
+
+.confirm-modal {
+  width:50%;
+  text-align: center;
+  font-size: 2rem;
+  line-height:4;
+}
+.confirm-modal button{
+  width:12rem;
+  font-size: 1.5rem;
+  margin:0.5rem;
+  padding:1.5rem;
+}
