@@ -12,18 +12,34 @@ class User extends React.Component {
     name:'',
     age: '',
     gender:'',
-  }};
+  };}
   constructor(props){
     super(props);
     this.state = {
       user:this.defaultUser()
     }
   }
+  validationName(name){
+    return typeof name === 'string' && name.length>0 && name.length<100;
+  }
+  validationAge(age){
+    return age>=0;
+  }
+  validationGender(gender){
+    return ["male","female"].includes(gender);
+  }
+  validation(user){
+    return this.validationName(user.name) && this.validationAge(user.age) && this.validationGender(user.gender);
+  }
   user(){
     return this.state.user;
   }
   addUser(){
-    this.props.addUser(this.state.user);
+    if( this.validation(this.state.user)){
+      this.props.addUser(this.state.user);
+    }else{
+      alert('wrong format');
+    }
   }
   deleteUser(){
     if(confirm("Are you sure want to remove this entry?")){
@@ -31,7 +47,11 @@ class User extends React.Component {
     }
   }
   modifyUser(){
-    this.props.modifyUser(this.state.user);
+    if( this.validation(this.state.user)){
+      this.props.modifyUser(this.state.user);
+    }else{
+      alert('wrong format');
+    }
   }
   clearUserState(){
     this.setState( { user:this.defaultUser() })
@@ -67,7 +87,7 @@ class AddUser extends User {
         <FormSelect name="gender" placeholder="Gender" value={this.user().gender} options={["male","female"]}
           onChange={this.onChange.bind(this)}
           />
-        <button onClick={e=>{this.addUser();this.clearUserState();}}>+</button>
+        <button onClick={e=>{this.addUser() && this.clearUserState();}}>+</button>
       </div>
     );
   }
