@@ -94,7 +94,7 @@ class AddUser extends User {
             />
         </div>
         <div className="small-2 column">
-          <button className="button expanded" onClick={e=>{this.addUser() && this.clearUserState();}}><i className="fa fa-plus" aria-hidden="true"></i></button>
+          <button className="button expanded" onClick={e=>{this.addUser(); this.clearUserState();}}><i className="fa fa-plus" aria-hidden="true"></i></button>
         </div>
       </div>
     );
