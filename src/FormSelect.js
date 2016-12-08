@@ -11,15 +11,12 @@ class FormSelect extends React.Component {
     }));
     return (
       <select name={this.props.name}
-        placeholder={this.props.placeholder}
         value={this.props.value}
         onChange={e=>this.props.onChange(e)}
-        defaultValue=""
         >
         {options}
       </select>
     );
-
   }
 }
 

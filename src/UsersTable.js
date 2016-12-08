@@ -7,26 +7,34 @@ const ASSC = -1;
 const DESC = 1;
 
 class User extends React.Component {
-  defaultUser: {
+  defaultUser() { return {
     id:'',
     name:'',
-    age:0,
+    age: '',
     gender:'',
-  };
+  }};
   constructor(props){
     super(props);
     this.state = {
-      user:{...this.defaultUser}
+      user:this.defaultUser()
     }
   }
-  getUser(){
+  user(){
     return this.state.user;
   }
   addUser(){
     this.props.addUser(this.state.user);
   }
+  deleteUser(){
+    if(confirm("Are you sure want to remove this entry?")){
+      this.props.deleteUser(this.props.user);
+    }
+  }
+  modifyUser(){
+    this.props.modifyUser(this.state.user);
+  }
   clearUserState(){
-    this.setState( { user:{...this.defaultUser} })
+    this.setState( { user:this.defaultUser() })
   }
   updateUserState(field,value){
     if( this.state.user[field] !== value ){
@@ -34,6 +42,12 @@ class User extends React.Component {
       newUser[field] = value;
       this.setState( { user:newUser })
     }
+  }
+  updateUserStateAll(user){
+    this.setState( {user:{...user}});
+  }
+  rander(){
+    return <div/>;
   }
 }
 
@@ -44,25 +58,89 @@ class AddUser extends User {
   render(){
     return (
       <div>
-        <input type="text" name="name" placeholder="Name"
+        <input type="text" placeholder="Name" name="name" value={this.state.user.name}
           onChange={this.onChange.bind(this)}
           ></input>
-        <FormSelect name="age" placeholder="Age" options={_.range(0,100)}
+        <FormSelect name="age" placeholder='Age' value={this.user().age} options={_.range(0,100)}
           onChange={this.onChange.bind(this)}
           />
-        <FormSelect name="gender" placeholder="Gender" options={["male","female"]}
+        <FormSelect name="gender" placeholder="Gender" value={this.user().gender} options={["male","female"]}
           onChange={this.onChange.bind(this)}
           />
-        <button onClick={e=>this.addUser()}>+</button>
+        <button onClick={e=>{this.addUser();this.clearUserState();}}>+</button>
       </div>
     );
   }
 }
 
 class UserRow extends User {
-    render(){
-      
+  constructor(props){
+    super(props);
+    this.state = { ...this.state,
+      editMode: false,
+    };
+  }
+  onChange(e){
+    this.updateUserState(e.target.name, e.target.value);
+  }
+  // Event handler when click of Edit button
+  // rewrite state of user from props
+  onEdit(e){
+    //this.props.reportOnEdit(this.props.user.id);
+    this.updateUserStateAll(this.props.user);
+    this.setState({editMode:true});
+  }
+  // cancel edit mode and clear user state.
+  cancelEdit(){
+    this.setState({editMode: false});
+    this.clearUserState();
+  }
+  // Event handler when click of Done button
+  // dispatch modified user information
+  onEditDone(e){
+    this.modifyUser();
+    this.cancelEdit();
+  }
+  render(){
+    let user = this.props.user;
+    if( this.state.editMode ){
+      return (
+        <tr>
+          <td>
+            <input type="text" name="name" value={this.user().name}
+              onChange={this.onChange.bind(this)}
+              ></input>
+          </td>
+          <td>
+            <FormSelect name="age" value={this.user().age} options={_.range(0,100)}
+              onChange={this.onChange.bind(this)}
+              />
+          </td>
+          <td>
+            <FormSelect name="gender" value={this.user().gender} options={["male","female"]}
+              onChange={this.onChange.bind(this)}
+              />
+          </td>
+          <td>
+            <button onClick={e=>this.onEditDone()}>Done</button>
+            <button onClick={e=>this.deleteUser()}>Delete</button>
+          </td>
+        </tr>
+      );
+    }else{
+      return (
+        <tr key={user.id}>
+          <td>{user.name}</td>
+          <td>{user.age}</td>
+          <td>{user.gender}</td>
+          <td>
+            <button onClick={e=>this.onEdit()}>Edit</button>
+            <button onClick={e=>this.deleteUser()}>Delete</button>
+          </td>
+        </tr>
+      );
     }
+  }
 }
 
 class UsersTable extends React.Component {
@@ -115,15 +193,11 @@ class UsersTable extends React.Component {
       return sort_func(a[sort_field],b[sort_field])
     }).slice(userBegin, userBegin+20 ).map(
       (user) => {
-        return <tr key={user.id}>
-          <td>{user.name}</td>
-          <td>{user.age}</td>
-          <td>{user.gender}</td>
-          <td>
-            <button>Edit</button>
-            <button>Delete</button>
-          </td>
-        </tr>;
+        return <UserRow key={user.id}
+          user={user}
+          modifyUser={this.props.modifyUser}
+          deleteUser={this.props.deleteUser}
+          />;
       }
     );
     const pagenation = _.range(1,npage).map( page => {
