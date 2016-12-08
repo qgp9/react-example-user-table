@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addUser, modifyUser, deleteUser }  from './actions';
@@ -39,7 +40,7 @@ class App extends Component {
 // inject users by array
 function select(state) {
   return {
-    users: Object.values(state.users),
+    users: _.values(state.users),
   }
 }
 
