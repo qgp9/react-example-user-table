@@ -38,3 +38,4 @@ npm run build
 # TODO / Limitation
 * Foudanion is used with compiled binary. SCSS will be better.
 * UsersTable.js is too big and needed to be splited per each component.
+* Animations
