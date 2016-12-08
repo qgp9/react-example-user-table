@@ -78,16 +78,25 @@ class AddUser extends User {
   render(){
     return (
       <div>
-        <input type="text" placeholder="Name" name="name" value={this.state.user.name}
-          onChange={this.onChange.bind(this)}
-          ></input>
-        <FormSelect name="age" placeholder='Age' value={this.user().age} options={_.range(0,100)}
-          onChange={this.onChange.bind(this)}
-          />
-        <FormSelect name="gender" placeholder="Gender" value={this.user().gender} options={["male","female"]}
-          onChange={this.onChange.bind(this)}
-          />
-        <button onClick={e=>{this.addUser() && this.clearUserState();}}>+</button>
+        <h2>Add a person</h2>
+        <div className="small-4 column">
+          <input type="text" placeholder="Name" name="name" value={this.state.user.name}
+            onChange={this.onChange.bind(this)}
+            ></input>
+        </div>
+        <div className="small-3 column">
+          <FormSelect name="age" placeholder='Age' value={this.user().age} options={_.range(0,100)}
+            onChange={this.onChange.bind(this)}
+            />
+        </div>
+        <div className="small-3 column">
+          <FormSelect name="gender" placeholder="Gender" value={this.user().gender} options={["male","female"]}
+            onChange={this.onChange.bind(this)}
+            />
+        </div>
+        <div className="small-2 column">
+          <button className="button" onClick={e=>{this.addUser() && this.clearUserState();}}>+</button>
+        </div>
       </div>
     );
   }

@@ -14,15 +14,23 @@ class App extends Component {
     const { dispatch, users } = this.props;
     return (
       <div className="App">
-        <div className="App-header">
-          <h2>Welcome to React</h2>
+        <div className="top-bar">
+          <div className="top-bar-left">
+            <ul className="menu">
+              <li className="menu-text">Site Title</li>
+            </ul>
+          </div>
         </div>
-        <UsersTable
-          users={users}
-          addUser={user=>this.handleUser(addUser(user))}
-          deleteUser={user=>this.handleUser(deleteUser(user))}
-          modifyUser={user=>this.handleUser(modifyUser(user))}
-          />
+        <div className="row">
+          <div className="small-9 small-centered columns">
+            <UsersTable
+              users={users}
+              addUser={user=>this.handleUser(addUser(user))}
+              deleteUser={user=>this.handleUser(deleteUser(user))}
+              modifyUser={user=>this.handleUser(modifyUser(user))}
+              />
+          </div>
+        </div>
       </div>
     );
   }
